@@ -4,7 +4,7 @@
 
 ;; Author: Eki Zhang <liuyinz95@gmail.com>
 ;; Maintainer: Eki Zhang <liuyinz95@gmail.com>
-;; Version: 0.9.0
+;; Version: 1.0.0
 ;; Package-Requires: ((emacs "29.1") (transient "0.6.0") (dash "2.19.1"))
 ;; Keywords: tools
 ;; Homepage: https://github.com/eki3z/git-cliff.el

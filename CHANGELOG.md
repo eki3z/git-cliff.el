@@ -1,13 +1,13 @@
 # Changelog
 
-## [0.9.0](https://github.com/liuyinz/git-cliff.el/compare/v0.8.0..v0.9.0) - 2024-12-19
+## [1.0.0](https://github.com/liuyinz/git-cliff.el/compare/v0.9.0..v1.0.0) - 2025-01-23
 
-### Features
+### Miscellaneous Chores
 
-- support option --from-context - ([ca71436](https://github.com/liuyinz/git-cliff.el/commit/ca71436f8cdbdd37d07f91c94231234d3fc9c8b4))
-- support option --use-branch-tags - ([ca8b9f6](https://github.com/liuyinz/git-cliff.el/commit/ca8b9f61abc0279a045e10ddb3aaa6f1214dcdfd))
+- update copyright years - ([1a8bed3](https://github.com/liuyinz/git-cliff.el/commit/1a8bed36236338815d5f3c1420d4e6ac9a88ca0f))
+- update homepage and author info - ([e2bb130](https://github.com/liuyinz/git-cliff.el/commit/e2bb130a7fa35b47bd90d43af0c17d3bf6ea655b))
 
-## [0.8.0](https://github.com/liuyinz/git-cliff.el/compare/v0.7.0..v0.8.0) - 2024-07-30
+## [0.9.0](https://github.com/liuyinz/git-cliff.el/compare/v0.7.0..v0.9.0) - 2024-12-19
 
 ### Bug Fixes
 
@@ -16,6 +16,8 @@
 ### Features
 
 - add option of --ignore-tags - ([0faea29](https://github.com/liuyinz/git-cliff.el/commit/0faea2967b36ab378b9b727c42ce1ada7d11add6))
+- support option --from-context - ([ca71436](https://github.com/liuyinz/git-cliff.el/commit/ca71436f8cdbdd37d07f91c94231234d3fc9c8b4))
+- support option --use-branch-tags - ([ca8b9f6](https://github.com/liuyinz/git-cliff.el/commit/ca8b9f61abc0279a045e10ddb3aaa6f1214dcdfd))
 
 ## [0.7.0](https://github.com/liuyinz/git-cliff.el/compare/v0.6.0..v0.7.0) - 2024-05-14
 
