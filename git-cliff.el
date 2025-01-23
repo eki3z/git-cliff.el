@@ -1,13 +1,13 @@
 ;;; git-cliff.el --- Generate and update changelog using git-cliff -*- lexical-binding: t -*-
 
-;; Copyright (C) 2023-2025 liuyinz
+;; Copyright (C) 2023-2025 Eki Zhang
 
-;; Author: liuyinz <liuyinz95@gmail.com>
-;; Maintainer: liuyinz <liuyinz95@gmail.com>
+;; Author: Eki Zhang <liuyinz95@gmail.com>
+;; Maintainer: Eki Zhang <liuyinz95@gmail.com>
 ;; Version: 0.9.0
 ;; Package-Requires: ((emacs "29.1") (transient "0.6.0") (dash "2.19.1"))
 ;; Keywords: tools
-;; Homepage: https://github.com/liuyinz/git-cliff.el
+;; Homepage: https://github.com/eki3z/git-cliff.el
 
 ;; This file is not a part of GNU Emacs.
 
@@ -48,7 +48,7 @@
   "Generate changelog based on git-cliff."
   :prefix "git-cliff-"
   :group 'git-cliff
-  :link '(url-link :tag "GitHub" "https://github.com/liuyinz/git-cliff.el"))
+  :link '(url-link :tag "GitHub" "https://github.com/eki3z/git-cliff.el"))
 
 (defconst git-cliff-version
   (lm-version (or load-file-name buffer-file-name))
