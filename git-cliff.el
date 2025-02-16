@@ -5,7 +5,7 @@
 ;; Author: Eki Zhang <liuyinz95@gmail.com>
 ;; Maintainer: Eki Zhang <liuyinz95@gmail.com>
 ;; Version: 1.0.0
-;; Package-Requires: ((emacs "29.1") (transient "0.6.0") (dash "2.19.1"))
+;; Package-Requires: ((emacs "29.1") (transient "0.6.0") (llama "0.6.0"))
 ;; Keywords: tools
 ;; Homepage: https://github.com/eki3z/git-cliff.el
 
@@ -40,7 +40,7 @@
 (require 'transient)
 (require 'pcase)
 
-(require 'dash)
+(require 'llama)
 
 (declare-function 'markdown-view-mode "markdown-mode")
 
@@ -135,9 +135,10 @@ If FULL is non-nil, return absolute path, otherwise relative path according
 to DIR.  If REGEXP is non-nil, match configurations by REGEXP instead of
 `git-cliff-config-regexp'."
   (and (file-exists-p dir)
-       (-map #'abbreviate-file-name
-             (-non-nil (directory-files
-                        dir full (or regexp git-cliff-config-regexp))))))
+       (mapcar #'abbreviate-file-name
+               (seq-filter #'identity
+                           (directory-files
+                            dir full (or regexp git-cliff-config-regexp))))))
 
 (defun git-cliff--read (multi &rest args)
   "Read a string with completion in git-cliff.
@@ -158,19 +159,20 @@ ARGS are as same as `completing-read'."
 ;; config
 (defun git-cliff--configs ()
   "Return a list of git-cliff configs available for current working directory."
-  (-flatten
-   (--map (apply #'git-cliff--locate it)
-          (let ((dir (git-cliff--get-repository)))
-            `((,dir)
-              (,dir "\\`Cargo\\.toml\\'")
-              (,(convert-standard-filename
-                 (concat (getenv "HOME")
-                         (pcase system-type
-                           ('darwin "/Library/Application Support/git-cliff/")
-                           ((guard (memq system-type '(cygwin windows-nt ms-dos)))
-                            "/AppData/Roaming/git-cliff/")
-                           (_ "/.config/git-cliff/"))))
-               nil t))))))
+  (thread-last
+    (let ((dir (git-cliff--get-repository)))
+      `((,dir)
+        (,dir "\\`Cargo\\.toml\\'")
+        (,(convert-standard-filename
+           (concat (getenv "HOME")
+                   (pcase system-type
+                     ('darwin "/Library/Application Support/git-cliff/")
+                     ((guard (memq system-type '(cygwin windows-nt ms-dos)))
+                      "/AppData/Roaming/git-cliff/")
+                     (_ "/.config/git-cliff/"))))
+         nil t)))
+    (mapcar (##apply #'git-cliff--locate %))
+    (flatten-tree)))
 
 (defun git-cliff--set-config (prompt &rest _)
   "Read and set config file for current working directory with PROMPT."
@@ -204,12 +206,13 @@ ARGS are as same as `completing-read'."
     (save-match-data
       (if (string-match regexp latest)
           (let ((prefix (match-string 1 latest))
-                (base (--map (string-to-number (match-string it latest)) '(2 3 4))))
-            (--map (concat prefix (apply #'format `("%d.%d.%d" ,@it)))
-                   (-let [(major minor patch) base]
-                     `((,major ,minor ,(1+ patch))
-                       (,major ,(1+ minor) 0)
-                       (,(1+ major) 0 0)))))
+                (base (mapcar (##string-to-number (match-string % latest))
+                              '(2 3 4))))
+            (mapcar (##concat prefix (apply #'format `("%d.%d.%d" ,@%)))
+                    (pcase-let* ((`(,major ,minor ,patch) base))
+                      `((,major ,minor ,(1+ patch))
+                        (,major ,(1+ minor) 0)
+                        (,(1+ major) 0 0)))))
         (and (string-equal latest "No tag") (list "v0.1.0"))))))
 
 (defun git-cliff--set-tag (prompt &rest _)
@@ -232,13 +235,13 @@ ARGS are as same as `completing-read'."
    (let* ((crm-separator "\\.\\.")
           (rev (git-cliff--read
                 'multi prompt
-                (-concat
+                (append
                  (split-string (shell-command-to-string
                                 "git for-each-ref --format=\"%(refname:short)\"")
                                "\n" t)
-                 (--filter (file-exists-p (expand-file-name (concat ".git/" it)))
-                           '("HEAD" "ORIG_HEAD" "FETCH_HEAD"
-                             "MERGE_HEAD" "CHERRY_PICK_HEAD"))))))
+                 (seq-filter (##file-exists-p (expand-file-name (concat ".git/" %)))
+                             '("HEAD" "ORIG_HEAD" "FETCH_HEAD"
+                               "MERGE_HEAD" "CHERRY_PICK_HEAD"))))))
      (and rev (concat (car rev) ".." (cadr rev))))))
 
 ;; changelog
@@ -419,12 +422,12 @@ This command will commit all staged files by default."
                (abbreviate-file-name path))))
     (apply #'format
            "binary path : %s\n   current dir : %s\n   bumped tags : %s\n"
-           (--map (propertize it 'face 'success)
-                  (list (or cmd "Not found")
-                        (or dir "Not dir")
-                        (concat (git-cliff--tag-latest)
-                                (and-let* ((new (git-cliff--bumped-version)))
-                                  (concat " => " new))))))))
+           (mapcar (##propertize % 'face 'success)
+                   (list (or cmd "Not found")
+                         (or dir "Not dir")
+                         (concat (git-cliff--tag-latest)
+                                 (and-let* ((new (git-cliff--bumped-version)))
+                                   (concat " => " new))))))))
 
 
 ;;; Commands
